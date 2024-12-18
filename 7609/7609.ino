@@ -38,7 +38,7 @@ BlynkTimer timer;
 
 BLYNK_CONNECTED() {
   // Reset control switches
-  Serial.println("Reset states of relays.");
+  //Serial.println("Reset control switches.");
   Blynk.virtualWrite(V0, P1);   // Pump 1 Remote Run
   Blynk.virtualWrite(V1, P2);   // Pump 2 Remote Run
 }
@@ -211,7 +211,7 @@ void connectionstatus() {
   Serial.println("Checking connection status...");
   if (WiFi.status() != WL_CONNECTED) {
     // Reset relays when disconnected from WiFi
-    Serial.println("Reset relays.");
+    //Serial.println("Reset relays.");
     P1 = 0;
     digitalWrite(8, P1);
     P2 = 0;
