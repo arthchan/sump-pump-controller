@@ -22,6 +22,7 @@ int P1 = 0;
 int P2 = 0;
 int D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15, D16;
 int D19 = 0;
+long RSSI = -100;
 bool high_level_flag = false;
 bool middle_level_flag = false;
 bool low_level_flag = false;
@@ -41,6 +42,7 @@ BLYNK_CONNECTED() {
   //Serial.println("Reset control switches.");
   Blynk.virtualWrite(V0, P1);   // Pump 1 Remote Run
   Blynk.virtualWrite(V1, P2);   // Pump 2 Remote Run
+  Blynk.virtualWrite(V19, WiFi.RSSI());   // RSSI
 }
 
 // DO for Pump 1
@@ -220,11 +222,21 @@ void connectionstatus() {
     //Blynk.connectWiFi(ssid, pass);
     WiFi.begin(ssid, pass);
     if (WiFi.status() == WL_CONNECTED) {
-      Serial.println("Reconnected to WiFi.");
+      RSSI = WiFi.RSSI();
+      Serial.print("Reconnected to WiFi. ");
+      Serial.print("(RSSI: ");
+      Serial.print(RSSI);
+      Serial.println(" dBm)");
+      Blynk.virtualWrite(V19, RSSI);   // RSSI
     }
   }
   else {
-    Serial.println("Connected to WiFi.");
+    Serial.print("Connected to WiFi. ");
+    RSSI = WiFi.RSSI();
+    Serial.print("(RSSI: ");
+    Serial.print(RSSI);
+    Serial.println(" dBm)");
+    Blynk.virtualWrite(V19, RSSI);   // RSSI
   }
   //Serial.println("Checking is completed.");
 }
