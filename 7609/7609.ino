@@ -81,16 +81,16 @@ void myTimer()
   Blynk.virtualWrite(V3, D4);   // Pump 2 Power
   Blynk.virtualWrite(V4, D5);   // Low Level
   Blynk.virtualWrite(V5, D6);   // Pump 1 Running
+  Blynk.virtualWrite(V14, D15); // Pump 1 Stopped
   Blynk.virtualWrite(V6, D7);   // Pump 2 Running
+  Blynk.virtualWrite(V15, D16); // Pump 2 Stopped
   Blynk.virtualWrite(V7, D8);   // Middle Level
   Blynk.virtualWrite(V8, D9);   // Pump 1 Common Fault
   Blynk.virtualWrite(V9, D10);  // Pump 2 Common Fault
   Blynk.virtualWrite(V10, D11); // High Level
   Blynk.virtualWrite(V11, D12); // High Level Backup 1
   Blynk.virtualWrite(V12, D13); // High Level Backup 2
-  Blynk.virtualWrite(V13, D14); // Long Running
-  Blynk.virtualWrite(V14, D15); // Pump 1 Stopped
-  Blynk.virtualWrite(V15, D16); // Pump 2 Stopped
+  Blynk.virtualWrite(V13, D14); // Long Running 
   Blynk.virtualWrite(V18, D19); // Water Level Index
   Blynk.endGroup();
 
