@@ -75,9 +75,26 @@ BLYNK_WRITE(V1)
   }
 }
 
-// Write DI values to datastreams
-void myTimer()
+// Write DI values to datastreams (Part 1)
+void processDI_1()
 {
+  // Determine water level index
+  if (D15 == 1) {
+    D19 = 6;
+  }
+  else if (D12 == 1) {
+    D19 = 5;
+  }
+  else if (D9 == 1) {
+    D19 = 4;
+  }
+  else if (D6 == 1) {
+    D19 = 2;
+  }
+  else {
+    D19 = 3;
+  }
+
   Blynk.beginGroup();
   Blynk.virtualWrite(V2, D4);   // Pump 1 Power
   Blynk.virtualWrite(V3, D5);   // Pump 2 Power
@@ -86,6 +103,14 @@ void myTimer()
   Blynk.virtualWrite(V14, D16); // Pump 1 Stopped
   Blynk.virtualWrite(V6, D8);   // Pump 2 Running
   Blynk.virtualWrite(V15, D17); // Pump 2 Stopped
+  Blynk.virtualWrite(V18, D19); // Water Level Index
+  Blynk.endGroup();
+}
+
+// Write DI values to datastreams (Part 2)
+void processDI_2()
+{
+  Blynk.beginGroup();
   Blynk.virtualWrite(V7, D9);   // First Preset Level
   Blynk.virtualWrite(V8, D10);  // Pump 1 Common Fault
   Blynk.virtualWrite(V9, D11);  // Pump 2 Common Fault
@@ -94,7 +119,6 @@ void myTimer()
   Blynk.virtualWrite(V12, D14); // Pump 2 Heat Cut
   Blynk.virtualWrite(V13, D12); // Second Preset Level
   Blynk.virtualWrite(V16, D3);  // Auto Mode
-  Blynk.virtualWrite(V18, D19); // Water Level Index
   Blynk.endGroup();
 
   // High level event
@@ -232,7 +256,7 @@ void myTimer()
 }
 
 // Function for checking connection status
-void connectionstatus() {
+void checkConnectionStatus() {
   Serial.println("Checking connection status...");
   if (WiFi.status() != WL_CONNECTED) {
     // Reset relays when disconnected from WiFi
@@ -243,10 +267,11 @@ void connectionstatus() {
     digitalWrite(12, P2);
     Serial.println("Reconnecting to WiFi...");
     //Blynk.connectWiFi(ssid, pass);
+    WiFi.disconnect();
     WiFi.begin(ssid, pass);
     if (WiFi.status() == WL_CONNECTED) {
-      RSSI = WiFi.RSSI();
       Serial.print("Reconnected to WiFi. ");
+      RSSI = WiFi.RSSI();
       Serial.print("(RSSI: ");
       Serial.print(RSSI);
       Serial.println(" dBm)");
@@ -279,8 +304,11 @@ void setup()
   //Blynk.connect();
 
   // Set up Blynk timer object
-  timer.setInterval(1000L, myTimer); 
-  timer.setInterval(30000L, connectionstatus);
+  timer.setInterval(2000L, processDI_1);
+  delay(1000);
+  timer.setInterval(2000L, processDI_2);
+  delay(500);
+  timer.setInterval(90000L, checkConnectionStatus);
   
   // Set pin mode for DI pins
   pinMode(A0, INPUT); // Auto Mode
@@ -322,23 +350,6 @@ void loop()
   D16 = 1 - D7; // Pump 1 Stopped (Opposite of Running)
   D17 = 1 - D8; // Pump 2 Stopped (Opposite of Running)
   D18 = 1 - D3; // Manual Mode (Opposite of Auto Mode)
-
-  // Determine water level index
-  if (D15 == 1) {
-    D19 = 6;
-  }
-  else if (D12 == 1) {
-    D19 = 5;
-  }
-  else if (D9 == 1) {
-    D19 = 4;
-  }
-  else if (D6 == 1) {
-    D19 = 2;
-  }
-  else {
-    D19 = 3;
-  }
 
   Blynk.run(); // Run Blynk
   timer.run(); // Run Blynk timer
