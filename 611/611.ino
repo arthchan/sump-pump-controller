@@ -78,92 +78,29 @@ BLYNK_WRITE(V1)
 // Write DI values to datastreams (Part 1)
 void processDI_1()
 {
-  // Determine water level index
-  if (D15 == 1) {
-    D19 = 6;
-  }
-  else if (D12 == 1) {
-    D19 = 5;
-  }
-  else if (D9 == 1) {
-    D19 = 4;
-  }
-  else if (D6 == 1) {
-    D19 = 2;
-  }
-  else {
-    D19 = 3;
-  }
+  // Read DI values
+  D3 = digitalRead(A0);  // Auto Mode
+  D4 = digitalRead(A1);  // Pump 1 Power
+  D5 = digitalRead(A2);  // Pump 2 Power
+  D7 = digitalRead(1);   // Pump 1 Running
+  D8 = digitalRead(2);   // Pump 2 Running
+  D10 = digitalRead(5);  // Pump 1 Common Fault
+  D11 = digitalRead(6);  // Pump 2 Common Fault
+  D16 = 1 - D7; // Pump 1 Stopped (Opposite of Running)
+  D17 = 1 - D8; // Pump 2 Stopped (Opposite of Running)
+  D18 = 1 - D3; // Manual Mode (Opposite of Auto Mode)
 
   Blynk.beginGroup();
+  Blynk.virtualWrite(V16, D3);  // Auto Mode
   Blynk.virtualWrite(V2, D4);   // Pump 1 Power
   Blynk.virtualWrite(V3, D5);   // Pump 2 Power
-  Blynk.virtualWrite(V4, D6);   // Low Level
   Blynk.virtualWrite(V5, D7);   // Pump 1 Running
   Blynk.virtualWrite(V14, D16); // Pump 1 Stopped
   Blynk.virtualWrite(V6, D8);   // Pump 2 Running
   Blynk.virtualWrite(V15, D17); // Pump 2 Stopped
-  Blynk.virtualWrite(V18, D19); // Water Level Index
-  Blynk.endGroup();
-}
-
-// Write DI values to datastreams (Part 2)
-void processDI_2()
-{
-  Blynk.beginGroup();
-  Blynk.virtualWrite(V7, D9);   // First Preset Level
   Blynk.virtualWrite(V8, D10);  // Pump 1 Common Fault
   Blynk.virtualWrite(V9, D11);  // Pump 2 Common Fault
-  Blynk.virtualWrite(V10, D15); // High Level
-  Blynk.virtualWrite(V11, D13); // Pump 1 Heat Cut
-  Blynk.virtualWrite(V12, D14); // Pump 2 Heat Cut
-  Blynk.virtualWrite(V13, D12); // Second Preset Level
-  Blynk.virtualWrite(V16, D3);  // Auto Mode
   Blynk.endGroup();
-
-  // High level event
-  if (D15 > 0 && high_level_flag == false) {
-    Blynk.logEvent("high_level");
-    Serial.println("HIGH LEVEL ALARM ON");
-    high_level_flag = true;
-  }
-  else if (D15 == 0 && high_level_flag == true) {
-    high_level_flag = false;
-    Serial.println("HIGH LEVEL ALARM RESET");
-  }
-
-  // Second preset level event
-  if (D12 > 0 && second_preset_level_flag == false) {
-    Blynk.logEvent("second_preset_level");
-    Serial.println("SECOND PRESET LEVEL ALARM ON");
-    second_preset_level_flag = true;
-  }
-  else if (D12 == 0 && second_preset_level_flag == true) {
-    second_preset_level_flag = false;
-    Serial.println("SECOND PRESET LEVEL ALARM RESET");
-  }
-
-  // First preset level event
-  if (D9 > 0 && first_preset_level_flag == false) {
-    Blynk.logEvent("first_preset_level");
-    Serial.println("FIRST PRESET LEVEL ALARM ON");
-    first_preset_level_flag = true;
-  }
-  else if (D9 == 0 && first_preset_level_flag == true) {
-    first_preset_level_flag = false;
-    Serial.println("FIRST PRESET LEVEL ALARM RESET");
-  }
-
-  // Low level event
-  if (D6 > 0 && low_level_flag == false) {
-    Blynk.logEvent("low_level");
-    Serial.println("LOW LEVEL ALARM ON");
-    low_level_flag = true;
-  }
-  else if (D6 == 0 && low_level_flag == true) {
-    low_level_flag = false;
-    Serial.println("LOW LEVEL ALARM RESET");
-  }
 
   // Auto mode event
   if (D3 > 0 && auto_mode_flag == false) {
@@ -183,50 +120,6 @@ void processDI_2()
   }
   else if (D18 == 0 && manual_mode_flag == true) {
     manual_mode_flag = false;
-  }
-
-  // P1 common fault event
-  if (D10 > 0 && p1_fault_flag == false) {
-    Blynk.logEvent("p1_fault");
-    Serial.println("PUMP 1 COMMON FAULT ALARM ON");
-    p1_fault_flag = true;
-  }
-  else if (D10 == 0 && p1_fault_flag == true) {
-    p1_fault_flag = false;
-    Serial.println("PUMP 1 COMMON FAULT ALARM RESET");
-  }
-
-  // P2 common fault event
-  if (D11 > 0 && p2_fault_flag == false) {
-    Blynk.logEvent("p2_fault");
-    Serial.println("PUMP 2 COMMON FAULT ALARM ON");
-    p2_fault_flag = true;
-  }
-  else if (D11 == 0 && p2_fault_flag == true) {
-    p2_fault_flag = false;
-    Serial.println("PUMP 2 COMMON FAULT ALARM RESET");
-  }
-
-  // P1 heat cut event
-  if (D13 > 0 && p1_heat_cut_flag == false) {
-    Blynk.logEvent("p1_heat_cut");
-    Serial.println("PUMP 1 HEAT CUT ALARM ON");
-    p1_heat_cut_flag = true;
-  }
-  else if (D13 == 0 && p1_heat_cut_flag == true) {
-    p1_heat_cut_flag = false;
-    Serial.println("PUMP 1 HEAT CUT ALARM RESET");
-  }
-
-  // P2 heat cut event
-  if (D14 > 0 && p2_heat_cut_flag == false) {
-    Blynk.logEvent("p2_heat_cut");
-    Serial.println("PUMP 2 HEAT CUT ALARM ON");
-    p2_heat_cut_flag = true;
-  }
-  else if (D14 == 0 && p2_heat_cut_flag == true) {
-    p2_heat_cut_flag = false;
-    Serial.println("PUMP 2 HEAT CUT ALARM RESET");
   }
 
   // Pump 1 running and stopped event
@@ -252,7 +145,133 @@ void processDI_2()
     Blynk.logEvent("p2_stopped");
     Serial.println("PUMP 2 STOPPED");
   }
-  //Serial.println("Wrote DI values to datastreams.");
+
+  // P1 common fault event
+  if (D10 > 0 && p1_fault_flag == false) {
+    Blynk.logEvent("p1_fault");
+    Serial.println("PUMP 1 COMMON FAULT ALARM ON");
+    p1_fault_flag = true;
+  }
+  else if (D10 == 0 && p1_fault_flag == true) {
+    p1_fault_flag = false;
+    Serial.println("PUMP 1 COMMON FAULT ALARM RESET");
+  }
+
+  // P2 common fault event
+  if (D11 > 0 && p2_fault_flag == false) {
+    Blynk.logEvent("p2_fault");
+    Serial.println("PUMP 2 COMMON FAULT ALARM ON");
+    p2_fault_flag = true;
+  }
+  else if (D11 == 0 && p2_fault_flag == true) {
+    p2_fault_flag = false;
+    Serial.println("PUMP 2 COMMON FAULT ALARM RESET");
+  }
+}
+
+// Write DI values to datastreams (Part 2)
+void processDI_2()
+{
+  // Read DI values
+  D6 = digitalRead(0);   // Low Level
+  D9 = digitalRead(3);   // First Preset Level
+  D12 = digitalRead(9);  // Second Preset Level
+  D13 = digitalRead(10); // Pump 1 Heat Cut
+  D14 = digitalRead(11); // Pump 2 Heat Cut
+  D15 = digitalRead(13); // High Level
+
+ // Determine water level index
+  if (D15 == 1) {
+    D19 = 6;
+  }
+  else if (D12 == 1) {
+    D19 = 5;
+  }
+  else if (D9 == 1) {
+    D19 = 4;
+  }
+  else if (D6 == 1) {
+    D19 = 2;
+  }
+  else {
+    D19 = 3;
+  }
+
+  Blynk.beginGroup();
+  Blynk.virtualWrite(V4, D6);   // Low Level
+  Blynk.virtualWrite(V7, D9);   // First Preset Level
+  Blynk.virtualWrite(V10, D15); // High Level
+  Blynk.virtualWrite(V11, D13); // Pump 1 Heat Cut
+  Blynk.virtualWrite(V12, D14); // Pump 2 Heat Cut
+  Blynk.virtualWrite(V13, D12); // Second Preset Level
+  Blynk.virtualWrite(V18, D19); // Water Level Index
+  Blynk.endGroup();
+
+  // Low level event
+  if (D6 > 0 && low_level_flag == false) {
+    Blynk.logEvent("low_level");
+    Serial.println("LOW LEVEL ALARM ON");
+    low_level_flag = true;
+  }
+  else if (D6 == 0 && low_level_flag == true) {
+    low_level_flag = false;
+    Serial.println("LOW LEVEL ALARM RESET");
+  }
+
+  // First preset level event
+  if (D9 > 0 && first_preset_level_flag == false) {
+    Blynk.logEvent("first_preset_level");
+    Serial.println("FIRST PRESET LEVEL ALARM ON");
+    first_preset_level_flag = true;
+  }
+  else if (D9 == 0 && first_preset_level_flag == true) {
+    first_preset_level_flag = false;
+    Serial.println("FIRST PRESET LEVEL ALARM RESET");
+  }
+
+  // High level event
+  if (D15 > 0 && high_level_flag == false) {
+    Blynk.logEvent("high_level");
+    Serial.println("HIGH LEVEL ALARM ON");
+    high_level_flag = true;
+  }
+  else if (D15 == 0 && high_level_flag == true) {
+    high_level_flag = false;
+    Serial.println("HIGH LEVEL ALARM RESET");
+  }
+
+  // P1 heat cut event
+  if (D13 > 0 && p1_heat_cut_flag == false) {
+    Blynk.logEvent("p1_heat_cut");
+    Serial.println("PUMP 1 HEAT CUT ALARM ON");
+    p1_heat_cut_flag = true;
+  }
+  else if (D13 == 0 && p1_heat_cut_flag == true) {
+    p1_heat_cut_flag = false;
+    Serial.println("PUMP 1 HEAT CUT ALARM RESET");
+  }
+
+  // P2 heat cut event
+  if (D14 > 0 && p2_heat_cut_flag == false) {
+    Blynk.logEvent("p2_heat_cut");
+    Serial.println("PUMP 2 HEAT CUT ALARM ON");
+    p2_heat_cut_flag = true;
+  }
+  else if (D14 == 0 && p2_heat_cut_flag == true) {
+    p2_heat_cut_flag = false;
+    Serial.println("PUMP 2 HEAT CUT ALARM RESET");
+  }
+
+  // Second preset level event
+  if (D12 > 0 && second_preset_level_flag == false) {
+    Blynk.logEvent("second_preset_level");
+    Serial.println("SECOND PRESET LEVEL ALARM ON");
+    second_preset_level_flag = true;
+  }
+  else if (D12 == 0 && second_preset_level_flag == true) {
+    second_preset_level_flag = false;
+    Serial.println("SECOND PRESET LEVEL ALARM RESET");
+  }
 }
 
 // Function for checking connection status
@@ -266,27 +285,27 @@ void checkConnectionStatus() {
     P2 = 0;
     digitalWrite(12, P2);
     Serial.println("Reconnecting to WiFi...");
-    //Blynk.connectWiFi(ssid, pass);
     WiFi.disconnect();
     WiFi.begin(ssid, pass);
-    if (WiFi.status() == WL_CONNECTED) {
-      Serial.print("Reconnected to WiFi. ");
-      RSSI = WiFi.RSSI();
-      Serial.print("(RSSI: ");
-      Serial.print(RSSI);
-      Serial.println(" dBm)");
-      Blynk.virtualWrite(V19, RSSI);   // RSSI
-    }
+    //Blynk.connectWiFi(ssid, pass);
   }
-  else {
+  if (WiFi.status() == WL_CONNECTED) {
     Serial.print("Connected to WiFi. ");
     RSSI = WiFi.RSSI();
     Serial.print("(RSSI: ");
     Serial.print(RSSI);
     Serial.println(" dBm)");
     Blynk.virtualWrite(V19, RSSI);   // RSSI
+    if (Blynk.connected()) {
+    Serial.println("Connected to Blynk server.");
+    }
+    else {
+      Serial.println("Reconnecting to Blynk server...");
+      Blynk.config(BLYNK_AUTH_TOKEN);
+      Blynk.connect();
+    }
   }
-  //Serial.println("Checking is completed.");
+  Serial.println("Checking is completed.");
 }
 
 // Setup function
@@ -296,19 +315,19 @@ void setup()
   Serial.begin(9600);
 
   // Set up WiFi connection
-  Blynk.connectWiFi(ssid, pass);
   //WiFi.begin(ssid, pass);
+  Blynk.connectWiFi(ssid, pass);
 
   // Set up Blynk server connection
   Blynk.config(BLYNK_AUTH_TOKEN);
-  //Blynk.connect();
+  Blynk.connect();
 
   // Set up Blynk timer object
   timer.setInterval(2000L, processDI_1);
   delay(1000);
   timer.setInterval(2000L, processDI_2);
   delay(500);
-  timer.setInterval(90000L, checkConnectionStatus);
+  timer.setInterval(60000L, checkConnectionStatus);
   
   // Set pin mode for DI pins
   pinMode(A0, INPUT); // Auto Mode
@@ -333,24 +352,8 @@ void setup()
 // Main function
 void loop()
 {
-  // Read DI values
-  D3 = digitalRead(A0);  // Auto Mode
-  D4 = digitalRead(A1);  // Pump 1 Power
-  D5 = digitalRead(A2);  // Pump 2 Power
-  D6 = digitalRead(0);   // Low Level
-  D7 = digitalRead(1);   // Pump 1 Running
-  D8 = digitalRead(2);   // Pump 2 Running
-  D9 = digitalRead(3);   // First Preset Level
-  D10 = digitalRead(5);  // Pump 1 Common Fault
-  D11 = digitalRead(6);  // Pump 2 Common Fault
-  D12 = digitalRead(9);  // Second Preset Level
-  D13 = digitalRead(10); // Pump 1 Heat Cut
-  D14 = digitalRead(11); // Pump 2 Heat Cut
-  D15 = digitalRead(13); // High Level
-  D16 = 1 - D7; // Pump 1 Stopped (Opposite of Running)
-  D17 = 1 - D8; // Pump 2 Stopped (Opposite of Running)
-  D18 = 1 - D3; // Manual Mode (Opposite of Auto Mode)
-
-  Blynk.run(); // Run Blynk
+  if (Blynk.connected()) {
+    Blynk.run(); // Run Blynk
+  }
   timer.run(); // Run Blynk timer
 }
