@@ -1,12 +1,11 @@
 /* Tunnel Sump Pump Controller (611)*/
 // Enable serial print for debugging
-#define BLYNK_PRINT Serial
+//#define BLYNK_PRINT Serial
 
 // Include Blynk device header file
 #include "ArduinoBlynkDeviceInfo.h"
 
 // Include libraries
-#include <SPI.h>
 #include <WiFiNINA.h>
 #include <BlynkSimpleWiFiNINA.h>
 
@@ -40,8 +39,7 @@ bool p2_running_flag = false;
 BlynkTimer timer;
 
 BLYNK_CONNECTED() {
-  // Reset control switches
-  //Serial.println("Reset control switches.");
+  // Reset control switches and read RSSI
   Blynk.virtualWrite(V0, P1);   // Pump 1 Remote Run
   Blynk.virtualWrite(V1, P2);   // Pump 2 Remote Run
   Blynk.virtualWrite(V19, WiFi.RSSI());   // RSSI
@@ -75,7 +73,7 @@ BLYNK_WRITE(V1)
   }
 }
 
-// Write DI values to datastreams (Part 1)
+// Read and write DI values (Part 1)
 void processDI_1()
 {
   // Read DI values
@@ -90,6 +88,7 @@ void processDI_1()
   D17 = 1 - D8; // Pump 2 Stopped (Opposite of Running)
   D18 = 1 - D3; // Manual Mode (Opposite of Auto Mode)
 
+  // Write DI values to datastreams
   Blynk.beginGroup();
   Blynk.virtualWrite(V16, D3);  // Auto Mode
   Blynk.virtualWrite(V2, D4);   // Pump 1 Power
@@ -169,7 +168,7 @@ void processDI_1()
   }
 }
 
-// Write DI values to datastreams (Part 2)
+// Read and write DI values (Part 2)
 void processDI_2()
 {
   // Read DI values
@@ -197,6 +196,7 @@ void processDI_2()
     D19 = 3;
   }
 
+  // Write DI values to datastreams
   Blynk.beginGroup();
   Blynk.virtualWrite(V4, D6);   // Low Level
   Blynk.virtualWrite(V7, D9);   // First Preset Level
@@ -276,10 +276,8 @@ void processDI_2()
 
 // Function for checking connection status
 void checkConnectionStatus() {
-  Serial.println("Checking connection status...");
   if (WiFi.status() != WL_CONNECTED) {
     // Reset relays when disconnected from WiFi
-    //Serial.println("Reset relays.");
     P1 = 0;
     digitalWrite(8, P1);
     P2 = 0;
@@ -297,15 +295,12 @@ void checkConnectionStatus() {
     Serial.println(" dBm)");
     Blynk.virtualWrite(V19, RSSI);   // RSSI
     if (Blynk.connected()) {
-    Serial.println("Connected to Blynk server.");
+      Serial.println("Connected to Blynk server.");
     }
     else {
       Serial.println("Reconnecting to Blynk server...");
-      Blynk.config(BLYNK_AUTH_TOKEN);
-      Blynk.connect();
     }
   }
-  Serial.println("Checking is completed.");
 }
 
 // Setup function
@@ -313,6 +308,7 @@ void setup()
 {
   // Set up debug console
   Serial.begin(9600);
+  Serial.println("Setting up device...");
 
   // Set up WiFi connection
   //WiFi.begin(ssid, pass);
@@ -352,8 +348,6 @@ void setup()
 // Main function
 void loop()
 {
-  if (Blynk.connected()) {
-    Blynk.run(); // Run Blynk
-  }
+  Blynk.run(); // Run Blynk
   timer.run(); // Run Blynk timer
 }
