@@ -301,7 +301,7 @@ void setup()
   delay(1000);
   timer.setInterval(2000L, processDI_2);
   delay(500);
-  timer.setInterval(60000L, checkConnectionStatus);
+  timer.setInterval(90000L, checkConnectionStatus);
   
   // Set pin mode for DI pins
   pinMode(A0, INPUT); // Pump 1 Power

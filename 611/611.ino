@@ -1,4 +1,4 @@
-/* Tunnel Sump Pump Controller (611)*/
+/* Tunnel Sump Pump Controller (611) */
 // Enable serial print for debugging
 //#define BLYNK_PRINT Serial
 
@@ -323,7 +323,7 @@ void setup()
   delay(1000);
   timer.setInterval(2000L, processDI_2);
   delay(500);
-  timer.setInterval(60000L, checkConnectionStatus);
+  timer.setInterval(90000L, checkConnectionStatus);
   
   // Set pin mode for DI pins
   pinMode(A0, INPUT); // Auto Mode
