@@ -14,6 +14,7 @@ char pass[] = PASS;
 // Declare global variables for DI, DO and flags
 int P1 = 0;
 int P2 = 0;
+int J1 = 0;
 int D3, D4, D5, D6, D7, D8, D9, D10, D11, D12, D13, D14, D15, D16, D17, D18;
 int D19 = 0;
 int RSSI_count = 14;
@@ -78,6 +79,20 @@ BLYNK_WRITE(V1)
   }
 }
 
+// DO for Jumper 1
+BLYNK_WRITE(V20)
+{
+  J1 = param.asInt();
+  if (J1 == 1) {
+    digitalWrite(4, HIGH);
+    BLYNK_LOG1("DUAL PUMP RUNNING MODE CUT-OUT (REMOTE)");
+  }
+  else {
+    digitalWrite(4, LOW);
+    BLYNK_LOG1("DUAL PUMP RUNNING MODE CUT-IN (REMOTE)");
+  }
+}
+
 // Read and write DI values (Part 1)
 void processDI_1()
 {
@@ -111,7 +126,7 @@ void processDI_1()
   }
 
   // Auto mode event
-  if (D3 > 0 && auto_mode_flag == false) {
+  if (D3 == 1 && auto_mode_flag == false) {
     Blynk.logEvent("auto_mode");
     BLYNK_LOG1("AUTO MODE SELECTED");
     auto_mode_flag = true;
@@ -121,7 +136,7 @@ void processDI_1()
   }
 
   // Manual mode event
-  if (D18 > 0 && manual_mode_flag == false) {
+  if (D18 == 1 && manual_mode_flag == false) {
     Blynk.logEvent("manual_mode");
     BLYNK_LOG1("MANUAL MODE SELECTED");
     manual_mode_flag = true;
@@ -131,7 +146,7 @@ void processDI_1()
   }
 
   // P1 common fault event
-  if (D10 > 0 && p1_fault_flag == false) {
+  if (D10 == 1 && p1_fault_flag == false) {
     Blynk.logEvent("p1_fault");
     BLYNK_LOG1("PUMP 1 COMMON FAULT ALARM ON");
     p1_fault_flag = true;
@@ -142,7 +157,7 @@ void processDI_1()
   }
 
   // P2 common fault event
-  if (D11 > 0 && p2_fault_flag == false) {
+  if (D11 == 1 && p2_fault_flag == false) {
     Blynk.logEvent("p2_fault");
     BLYNK_LOG1("PUMP 2 COMMON FAULT ALARM ON");
     p2_fault_flag = true;
@@ -153,7 +168,7 @@ void processDI_1()
   }
 
   // Long running event
-  if (D15 > 0 && long_running_flag == false) {
+  if (D15 == 1 && long_running_flag == false) {
     Blynk.logEvent("long_running");
     BLYNK_LOG1("LONG RUNNING ALARM ON");
     long_running_flag = true;
@@ -213,7 +228,7 @@ void processDI_2()
   Blynk.endGroup();
 
   // Low level event
-  if (D6 > 0 && low_level_flag == false) {
+  if (D6 == 1 && low_level_flag == false) {
     Blynk.logEvent("low_level");
     BLYNK_LOG1("LOW LEVEL ALARM ON");
     low_level_flag = true;
@@ -224,7 +239,7 @@ void processDI_2()
   }
 
   // Pump 1 running and stopped event
-  if (D7 > 0 && p1_running_flag == false) {
+  if (D7 == 1 && p1_running_flag == false) {
     Blynk.logEvent("p1_running");
     BLYNK_LOG1("PUMP 1 RUNNING");
     p1_running_flag = true;
@@ -242,7 +257,7 @@ void processDI_2()
       BLYNK_LOG1("PUMP 2 STOPPED (PLRA)");
     }
   }
-  if (p1_running_flag == true && p1_pre_long_running_flag == false) {
+  if (J1 == 1 && p1_running_flag == true && p1_pre_long_running_flag == false) {
     if (millis() - p1_run_time > pre_long_running_period) {
       Blynk.logEvent("p1_pre_long_running");
       BLYNK_LOG1("PUMP 1 PRE-LONG RUNNING ALARM ON");
@@ -254,7 +269,7 @@ void processDI_2()
   }
 
   // Pump 2 running and stopped event
-  if (D8 > 0 && p2_running_flag == false) {
+  if (D8 == 1 && p2_running_flag == false) {
     Blynk.logEvent("p2_running");
     BLYNK_LOG1("PUMP 2 RUNNING");
     p2_running_flag = true;
@@ -272,7 +287,7 @@ void processDI_2()
       BLYNK_LOG1("PUMP 1 STOPPED (PLRA)");
     }
   }
-  if (p2_running_flag == true && p2_pre_long_running_flag == false) {
+  if (J1 == 1 && p2_running_flag == true && p2_pre_long_running_flag == false) {
     if (millis() - p2_run_time > pre_long_running_period) {
       Blynk.logEvent("p2_pre_long_running");
       BLYNK_LOG1("PUMP 2 PRE-LONG RUNNING ALARM ON");
@@ -284,7 +299,7 @@ void processDI_2()
   }
 
   // Middle level event
-  if (D9 > 0 && middle_level_flag == false) {
+  if (D9 == 1 && middle_level_flag == false) {
     Blynk.logEvent("middle_level");
     BLYNK_LOG1("MIDDLE LEVEL ALARM ON");
     middle_level_flag = true;
@@ -295,7 +310,7 @@ void processDI_2()
   }
 
   // High level event
-  if (D12 > 0 && high_level_flag == false) {
+  if (D12 == 1 && high_level_flag == false) {
     Blynk.logEvent("high_level");
     BLYNK_LOG1("HIGH LEVEL ALARM ON");
     high_level_flag = true;
@@ -306,7 +321,7 @@ void processDI_2()
   }
 
   // High level backup 1 event
-  if (D13 > 0 && high_level_bu1_flag == false) {
+  if (D13 == 1 && high_level_bu1_flag == false) {
     Blynk.logEvent("high_level_backup_1");
     BLYNK_LOG1("HIGH LEVEL BACKUP 1 ALARM ON");
     high_level_bu1_flag = true;
@@ -317,7 +332,7 @@ void processDI_2()
   }
 
   // High level backup 2 event
-  if (D14 > 0 && high_level_bu2_flag == false) {
+  if (D14 == 1 && high_level_bu2_flag == false) {
     Blynk.logEvent("high_level_backup_2");
     BLYNK_LOG1("HIGH LEVEL BACKUP 2 ALARM ON");
     high_level_bu2_flag = true;
@@ -365,6 +380,7 @@ void setup()
   // Set pin mode for DO pins
   pinMode(8, OUTPUT);  // Relay 3 for Pump 1
   pinMode(12, OUTPUT); // Relay 4 for pump 2
+  pinMode(4, OUTPUT);  // Relay 1 for Dual Pump Mode Cut-Out
 }
 
 // Main function
@@ -379,6 +395,8 @@ void loop()
     digitalWrite(8, P1);
     P2 = 0;
     digitalWrite(12, P2);
+    J1 = 0;
+    digitalWrite(4, J1);
 
     if (wifi_status != WL_CONNECTED)
     {

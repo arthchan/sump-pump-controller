@@ -100,7 +100,7 @@ void processDI_1()
   }
 
   // P1 common fault event
-  if (D9 > 0 && p1_fault_flag == false) {
+  if (D9 == 1 && p1_fault_flag == false) {
     Blynk.logEvent("p1_fault");
     BLYNK_LOG1("PUMP 1 COMMON FAULT ALARM ON");
     p1_fault_flag = true;
@@ -111,7 +111,7 @@ void processDI_1()
   }
 
   // P2 common fault event
-  if (D10 > 0 && p2_fault_flag == false) {
+  if (D10 == 1 && p2_fault_flag == false) {
     Blynk.logEvent("p2_fault");
     BLYNK_LOG1("PUMP 2 COMMON FAULT ALARM ON");
     p2_fault_flag = true;
@@ -122,7 +122,7 @@ void processDI_1()
   }
 
   // Long running event
-  if (D14 > 0 && long_running_flag == false) {
+  if (D14 == 1 && long_running_flag == false) {
     Blynk.logEvent("long_running");
     BLYNK_LOG1("LONG RUNNING ALARM ON");
     long_running_flag = true;
@@ -182,7 +182,7 @@ void processDI_2()
   Blynk.endGroup();
 
   // Low level event
-  if (D5 > 0 && low_level_flag == false) {
+  if (D5 == 1 && low_level_flag == false) {
     Blynk.logEvent("low_level");
     BLYNK_LOG1("LOW LEVEL ALARM ON");
     low_level_flag = true;
@@ -193,7 +193,7 @@ void processDI_2()
   }
 
   // Pump 1 running and stopped event
-  if (D6 > 0 && p1_running_flag == false) {
+  if (D6 == 1 && p1_running_flag == false) {
     Blynk.logEvent("p1_running");
     BLYNK_LOG1("PUMP 1 RUNNING");
     p1_running_flag = true;
@@ -205,7 +205,7 @@ void processDI_2()
   }
 
   // Pump 2 running and stopped event
-  if (D7 > 0 && p2_running_flag == false) {
+  if (D7 == 1 && p2_running_flag == false) {
     Blynk.logEvent("p2_running");
     BLYNK_LOG1("PUMP 2 RUNNING");
     p2_running_flag = true;
@@ -217,7 +217,7 @@ void processDI_2()
   }
 
   // Middle level event
-  if (D8 > 0 && middle_level_flag == false) {
+  if (D8 == 1 && middle_level_flag == false) {
     Blynk.logEvent("middle_level");
     BLYNK_LOG1("MIDDLE LEVEL ALARM ON");
     middle_level_flag = true;
@@ -228,7 +228,7 @@ void processDI_2()
   }
 
   // High level event
-  if (D11 > 0 && high_level_flag == false) {
+  if (D11 == 1 && high_level_flag == false) {
     Blynk.logEvent("high_level");
     BLYNK_LOG1("HIGH LEVEL ALARM ON");
     high_level_flag = true;
@@ -239,7 +239,7 @@ void processDI_2()
   }
 
   // High level backup 1 event
-  if (D12 > 0 && high_level_bu1_flag == false) {
+  if (D12 == 1 && high_level_bu1_flag == false) {
     Blynk.logEvent("high_level_backup_1");
     BLYNK_LOG1("HIGH LEVEL BACKUP 1 ALARM ON");
     high_level_bu1_flag = true;
@@ -250,7 +250,7 @@ void processDI_2()
   }
 
   // High level backup 2 event
-  if (D13 > 0 && high_level_bu2_flag == false) {
+  if (D13 == 1 && high_level_bu2_flag == false) {
     Blynk.logEvent("high_level_backup_2");
     BLYNK_LOG1("HIGH LEVEL BACKUP 2 ALARM ON");
     high_level_bu2_flag = true;

@@ -108,7 +108,7 @@ void processDI_1()
   }
 
   // Auto mode event
-  if (D3 > 0 && auto_mode_flag == false) {
+  if (D3 == 1 && auto_mode_flag == false) {
     Blynk.logEvent("auto_mode");
     BLYNK_LOG1("AUTO MODE SELECTED");
     auto_mode_flag = true;
@@ -118,7 +118,7 @@ void processDI_1()
   }
 
   // Manual mode event
-  if (D18 > 0 && manual_mode_flag == false) {
+  if (D18 == 1 && manual_mode_flag == false) {
     Blynk.logEvent("manual_mode");
     BLYNK_LOG1("MANUAL MODE SELECTED");
     manual_mode_flag = true;
@@ -128,7 +128,7 @@ void processDI_1()
   }
 
   // P1 common fault event
-  if (D10 > 0 && p1_fault_flag == false) {
+  if (D10 == 1 && p1_fault_flag == false) {
     Blynk.logEvent("p1_fault");
     BLYNK_LOG1("PUMP 1 COMMON FAULT ALARM ON");
     p1_fault_flag = true;
@@ -139,7 +139,7 @@ void processDI_1()
   }
 
   // P2 common fault event
-  if (D11 > 0 && p2_fault_flag == false) {
+  if (D11 == 1 && p2_fault_flag == false) {
     Blynk.logEvent("p2_fault");
     BLYNK_LOG1("PUMP 2 COMMON FAULT ALARM ON");
     p2_fault_flag = true;
@@ -150,7 +150,7 @@ void processDI_1()
   }
 
   // P1 heat cut event
-  if (D13 > 0 && p1_heat_cut_flag == false) {
+  if (D13 == 1 && p1_heat_cut_flag == false) {
     Blynk.logEvent("p1_heat_cut");
     BLYNK_LOG1("PUMP 1 HEAT CUT ALARM ON");
     p1_heat_cut_flag = true;
@@ -161,7 +161,7 @@ void processDI_1()
   }
 
   // P2 heat cut event
-  if (D14 > 0 && p2_heat_cut_flag == false) {
+  if (D14 == 1 && p2_heat_cut_flag == false) {
     Blynk.logEvent("p2_heat_cut");
     BLYNK_LOG1("PUMP 2 HEAT CUT ALARM ON");
     p2_heat_cut_flag = true;
@@ -216,7 +216,7 @@ void processDI_2()
   Blynk.endGroup();
 
   // Low level event
-  if (D6 > 0 && low_level_flag == false) {
+  if (D6 == 1 && low_level_flag == false) {
     Blynk.logEvent("low_level");
     BLYNK_LOG1("LOW LEVEL ALARM ON");
     low_level_flag = true;
@@ -227,7 +227,7 @@ void processDI_2()
   }
 
   // Pump 1 running and stopped event
-  if (D7 > 0 && p1_running_flag == false) {
+  if (D7 == 1 && p1_running_flag == false) {
     Blynk.logEvent("p1_running");
     BLYNK_LOG1("PUMP 1 RUNNING");
     p1_running_flag = true;
@@ -239,7 +239,7 @@ void processDI_2()
   }
 
   // Pump 2 running and stopped event
-  if (D8 > 0 && p2_running_flag == false) {
+  if (D8 == 1 && p2_running_flag == false) {
     Blynk.logEvent("p2_running");
     BLYNK_LOG1("PUMP 2 RUNNING");
     p2_running_flag = true;
@@ -251,7 +251,7 @@ void processDI_2()
   }
 
   // First preset level event
-  if (D9 > 0 && first_preset_level_flag == false) {
+  if (D9 == 1 && first_preset_level_flag == false) {
     Blynk.logEvent("first_preset_level");
     BLYNK_LOG1("FIRST PRESET LEVEL ALARM ON");
     first_preset_level_flag = true;
@@ -262,7 +262,7 @@ void processDI_2()
   }
 
   // Second preset level event
-  if (D12 > 0 && second_preset_level_flag == false) {
+  if (D12 == 1 && second_preset_level_flag == false) {
     Blynk.logEvent("second_preset_level");
     BLYNK_LOG1("SECOND PRESET LEVEL ALARM ON");
     second_preset_level_flag = true;
@@ -273,7 +273,7 @@ void processDI_2()
   }
 
   // High level event
-  if (D15 > 0 && high_level_flag == false) {
+  if (D15 == 1 && high_level_flag == false) {
     Blynk.logEvent("high_level");
     BLYNK_LOG1("HIGH LEVEL ALARM ON");
     high_level_flag = true;
