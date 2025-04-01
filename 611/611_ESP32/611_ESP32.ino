@@ -1,10 +1,11 @@
-/* Tunnel Sump Pump Controller (611) [WN] */
+/* Tunnel Sump Pump Controller (611) [ESP32] */
 // Enable serial print for debugging
 //#define BLYNK_PRINT Serial
 
 // Include header files
 #include "ArduinoBlynkDeviceInfo.h" // Blynk device information
-#include <BlynkSimpleWiFiNINA.h>    // Blynk WiFi library
+#include <WiFiS3.h>                 // Blynk WiFi library
+#include <BlynkSimpleWifi.h>        // Blynk WiFi library
 #include "ArduinoWiFiInfo.h"        // WiFi information
 
 // Provide WiFi credentials
