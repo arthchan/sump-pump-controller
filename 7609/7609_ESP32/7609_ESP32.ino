@@ -15,8 +15,10 @@ char pass[] = PASS;
 // Declare global variables for DI, DO and flags
 int PUMP1 = 0;
 int PUMP2 = 0;
+int SENA = 0;
+int SENB = 0;
 int SPEAM = 0;
-int A1A2, A1A2X, P1, P2, L1R, L2R, L1RX, L2RX, F1, F2, PP1, PP2, LRA, LL, CP1, ML, HL;
+int A1A2, A1A2X, P1, P2, L1R, L2R, L1RX, L2RX, F1, F2, PP1, PP2, LRA, LL, CP1, ML, HL, SA, SB;
 int WLI = 0;
 int WLI_old = 0;
 int RSSI_count = 14;
@@ -82,6 +84,42 @@ BLYNK_WRITE(V1)
   }
 }
 
+// DO for Sensor A
+BLYNK_WRITE(V22)
+{
+  SENA = param.asInt();
+  if (SENA == 1) {
+    digitalWrite(4, HIGH);
+    delay(3000);
+    digitalWrite(4, LOW);
+    BLYNK_LOG1("SENSOR A ON/OFF TRIGGERED (REMOTE)");
+  }
+  else {
+    digitalWrite(4, HIGH);
+    delay(3000);
+    digitalWrite(4, LOW);
+    BLYNK_LOG1("SENSOR A ON/OFF TRIGGERED (REMOTE)");
+  }
+}
+
+// DO for Sensor B
+BLYNK_WRITE(V23)
+{
+  SENB = param.asInt();
+  if (SENB == 1) {
+    digitalWrite(7, HIGH);
+    delay(3000);
+    digitalWrite(7, LOW);
+    BLYNK_LOG1("SENSOR B ON/OFF TRIGGERED (REMOTE)");
+  }
+  else {
+    digitalWrite(7, HIGH);
+    delay(3000);
+    digitalWrite(7, LOW);
+    BLYNK_LOG1("SENSOR B ON/OFF TRIGGERED (REMOTE)");
+  }
+}
+
 // Standby Pump Early Assist Mode Switch
 BLYNK_WRITE(V21)
 {
@@ -114,6 +152,8 @@ void processDI_1()
   PP1 = digitalRead(10);  // High Level Backup 1
   PP2 = digitalRead(11);  // High Level Backup 2
   LRA = digitalRead(13);  // Long Running
+  SA = digitalRead(A4);  // Sensor A
+  SB = digitalRead(A5);  // Sensor B
   A1A2X = 1 - A1A2; // Manual Mode (Pump 1 AND Pump 2, opposite of Auto Mode)
 
   // Write DI values to datastreams
@@ -126,6 +166,8 @@ void processDI_1()
   Blynk.virtualWrite(V11, PP1);  // High Level Backup 1
   Blynk.virtualWrite(V12, PP2);  // High Level Backup 2
   Blynk.virtualWrite(V13, LRA);  // Long Running
+  Blynk.virtualWrite(V24, SA);  // Sensor A
+  Blynk.virtualWrite(V25, SB);  // Sensor B
   Blynk.endGroup();
 
   // Read RSSI and write to datastream
@@ -407,6 +449,8 @@ void setup()
   pinMode(A1, INPUT);        // Pump 1 Power
   pinMode(A2, INPUT);        // Pump 2 Power
   pinMode(A3, INPUT_PULLUP); // First Level
+  pinMode(A4, INPUT_PULLUP); // Sensor A
+  pinMode(A5, INPUT_PULLUP); // Sensor B
   pinMode(0, INPUT);         // Low Level
   pinMode(1, INPUT);         // Pump 1 Running
   pinMode(2, INPUT);         // Pump 2 Running
@@ -419,6 +463,8 @@ void setup()
   pinMode(13, INPUT);        // Long Running
 
   // Set pin mode for DO pins
+  pinMode(4, OUTPUT);  // Relay 1 for Sensor A
+  pinMode(7, OUTPUT);  // Relay 2 for Sensor B
   pinMode(8, OUTPUT);  // Relay 3 for Pump 1
   pinMode(12, OUTPUT); // Relay 4 for Pump 2
 }
